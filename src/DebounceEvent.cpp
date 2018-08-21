@@ -33,13 +33,15 @@ DebounceEvent::DebounceEvent(uint8_t pin, uint8_t mode, unsigned long delay, uns
 
 
 void DebounceEvent::_init(uint8_t pin, uint8_t mode, unsigned long delay, unsigned long repeat) {
-
     // store configuration
     _pin = pin;
     _mode = mode & 0x01;
-    _status = _defaultStatus = ((mode & BUTTON_DEFAULT_HIGH) > 0);
+    _defaultStatus = (mode & BUTTON_DEFAULT_HIGH) > 0;
     _delay = delay;
     _repeat = repeat;
+
+    // init button state    
+    _status = ((mode & BUTTON_SWITCH) > 0) ? digitalRead(_pin) : _defaultStatus;
 
     // set up button
     if (_pin == 16) {
